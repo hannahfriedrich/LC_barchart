@@ -22,9 +22,10 @@
         }
 
         #title {
-            position: absolute;
+            position: fixed;
+            top: 10px;
             right: 20px;
-            padding-top: 80px;
+            padding-top: 10px;
             padding-left: 80px;
         }
 
@@ -37,11 +38,11 @@
             /*padding-left: 80px;*/
         }
 
-        #mag-chart {
+        #lc-chart {
             width: 20%;
-            position: absolute;
+            position: fixed;
             right: 20px;
-            padding-top: 80px;
+            padding-top: 30px;
             padding-left: 80px;
         }
 
@@ -115,6 +116,9 @@
         basins.resetStyle(e.target);
     }
 
+
+
+
     var map = L.map('map').setView([13.29119, -22.92940], 4);
 
     mapbox_token = 'pk.eyJ1IjoiZnJpZWRyaWgiLCJhIjoiY2o4eGYyZzllMGtiYjMzcGp0cTM5NXZ0cCJ9.BPCA9enT7iq6naVIOEHK9w';
@@ -151,8 +155,37 @@
 //        },
         }}).addTo(map);
 
+    updateMapFilter();
 
 ///////////////CHART CREATION//////////////////////////
+    function updateMapFilter() {
+
+
+        // map.flyTo(map.getCenter(),map.getZoom());
+        var data = null;
+
+        url = lcTile._ctx.canvas._image.src;
+        //console.log(src);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'arraybuffer';
+        xhr.onload = function(e) {
+            tt = this.response;
+            var img = UPNG.decode(tt);
+            var rgba = UPNG.toRGBA8(img)[0];
+            var h = img.height;
+            var w = img.width;
+            var ctype = img.ctype;
+            var depth = img.depth;
+            data = img.data;
+
+            console.log("depth:" + depth.toString());
+            console.log("ctype:" + ctype.toString());
+            console.log("mean:" + ss.mean(data).toString());
+            console.log("median:" + ss.median(data).toString());
+            console.log("max:" + ss.max(data).toString());
+            console.log(data);
+
     var dataarray = Array.from(lcTile);
     var newarray = [];
     for(var i=0;i<dataarray.length;i++) {
@@ -172,18 +205,27 @@
     //create charts
     var lcChart = dc.barChart('#lc-chart');
 
-    var vegDimension = filter.dimension(function(d) {
+    var lcDimension = filter.dimension(function(d) {
         var veg = d;
-        return  veg  < 25 ? '0-0.2':
-            veg < 50 ? '0.21-0.25' :
-                veg < 75 ? '0.26-0.30' :
-                    veg < 100 ? '0.31-0.35' :
-                        veg < 125 ? '0.36-0.40' :
-                            veg < 150 ? '0.41-0.45' :
-                                veg < 175 ? '0.46-0.50' :
-                                    veg < 200 ? '0.51-0.55' :
-                                        veg < 225 ? '0.56-0.60' :
-                                            veg < 251 ? '0.61-0.65':'>0.65'
+        return  veg  = 0 ? 'Water':
+            veg = 1  ? 'Forest' :
+                veg = 2 ? 'Forest2' :
+                    veg = 3 ? 'Forest3' :
+                        veg = 4 ? 'Forest4' :
+                            veg = 5 ? 'Forest5' :
+                                veg = 6 ? 'Shrubland' :
+                                    veg = 7 ? 'Shrubland2' :
+                                        veg = 8 ? 'Savannas/Grasslands' :
+                                            veg = 9 ? 'Savannas/Grasslands2':
+                                                veg = 10 ? 'Savannas/Grasslands3' :
+                                                    veg = 11 ? 'Wetlands' :
+                                                        veg = 12 ? 'Croplands' :
+                                                            veg = 13 ? 'Urban' :
+                                                                veg = 14 ? 'Cropland/natural veg' :
+                                                                    veg = 15 ? 'Snow/ice' :
+                                                                        veg = 16 ? 'Barren' : ''
+
+
 
 
     });
@@ -210,61 +252,57 @@
         //                .label(function (p) {
         //                    return p.key;
         //                })
-        .ticks(5)
-    ;
+        .ticks(5);
 
 
     dc.renderAll();
 
-//    var bars = $("rect.bar");
-//    for(var i =0; i< bars.length;i++) {
-//        text_tmp = $(bars[i]).find("title").text();
-//        text = (text_tmp.split(":")[0]);
-//        if (text == "0-0.2") {
-//            $(bars[i]).css({ fill: '#dfc27d' });
-//        }
-//        if (text == "0.21-0.25") {
-//            $(bars[i]).css({ fill: '#cdbd7c' });
-//        }
-//        if (text == "0.26-0.30") {
-//            $(bars[i]).css({ fill: '#bab87b' });
-//        }
-//        if (text == "0.31-0.35") {
-//            $(bars[i]).css({ fill: '#a7b37a' });
-//        }
-//        if (text == "0.36-0.40") {
-//            $(bars[i]).css({ fill: '#95ae79' });
-//        }
-//        if (text == "0.41-0.45") {
-//            $(bars[i]).css({ fill: '#82a978' });
-//        }
-//        if (text == "0.46-0.50") {
-//            $(bars[i]).css({ fill: '#70a477' });
-//        }
-//        if (text == "0.51-0.55") {
-//            $(bars[i]).css({ fill: '#5e9e76' });
-//        }
-//        if (text == "0.56-0.60") {
-//            $(bars[i]).css({ fill: '#4b9975' });
-//        }
-//        if (text == "0.61-0.65") {
-//            $(bars[i]).css({ fill: '#389474' });
-//        }
-//        if (text == ">0.65") {
-//            $(bars[i]).css({ fill: '#268f73' });
-//        }
-//
-//
-//    };
-//
-//    //};
-//
-//
-//
-//
-//    //   dc.redrawAll();
-//
-//    }
+    var bars = $("rect.bar");
+    for(var i =0; i< bars.length;i++) {
+        text_tmp = $(bars[i]).find("title").text();
+        text = (text_tmp.split(":")[0]);
+        if (text == "Water") {
+            $(bars[i]).css({ fill: '#abb6ff' });
+        }
+        if (text == "Forest" || text == "Forest2" || text == "Forest3" || text == "Forest4" || text == "Forest5" ) {
+            $(bars[i]).css({ fill: '#53a37a' });
+        }
+        if (text == "Shrubland" || text == "Shrubland2") {
+            $(bars[i]).css({ fill: '#eeddb9' });
+        }
+        if (text == "Savannas/Grasslands" || text == "Savannas/Grasslands2" || text == "Savannas/Grasslands3") {
+            $(bars[i]).css({ fill: '#faf6a7' });
+        }
+        if (text == "Wetlands") {
+            $(bars[i]).css({ fill: '#a1c8c1' });
+        }
+        if (text == "Croplands") {
+            $(bars[i]).css({ fill: '#e4e5a6' });
+        }
+        if (text == "Urban") {
+            $(bars[i]).css({ fill: '#ac9ab0' });
+        }
+        if (text == "Cropland/natural veg") {
+            $(bars[i]).css({ fill: '#76a53d' });
+        }
+        if (text == "Snow/ice") {
+            $(bars[i]).css({ fill: '#efefee' });
+        }
+        if (text == "Barren") {
+            $(bars[i]).css({ fill: '#d2c4b4' });
+        }
+
+
+    };
+
+    };
+
+
+
+
+       //dc.redrawAll();
+
+    }
 
 
 </script>
