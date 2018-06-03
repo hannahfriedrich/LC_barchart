@@ -155,7 +155,6 @@
 //        },
         }}).addTo(map);
 
-    updateMapFilter();
 
 ///////////////CHART CREATION//////////////////////////
     function updateMapFilter() {
@@ -293,16 +292,18 @@
         }
 
 
-    };
+    }
 
-    };
-
-
+        };
 
 
-       //dc.redrawAll();
+        xhr.send();
+
+        //   dc.redrawAll();
 
     }
+
+    updateMapFilter();
 
 
 </script>
