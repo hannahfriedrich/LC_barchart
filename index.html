@@ -180,6 +180,7 @@
 	    var imgs = $(lcTile._container.children[0]).find("img");
 	    var len = imgs.length;
 	    var newarray = [];
+	    var dataarray = [];
 
 	    for (i = 0; i < len; i++) {
 
@@ -210,23 +211,29 @@
 			    console.log("max:" + ss.max(data).toString());
 			    console.log(data);
 
-			    var dataarray = Array.from(lcTile);
+			    dataarray = Array.from(data);
 			    // var newarray = [];
 			    for (var i = 0; i < dataarray.length; i++) {
 
-				    if (dataarray[i] < 251 && dataarray[i] > 0) {
-					    newarray.push(dataarray[i]);
-				    }
+					    if (dataarray[i] < 251 && dataarray[i] > 0 && dataarray[i] != null) {
+							    newarray.push(dataarray[i]);
+					    }
 			    }
+			    dataarray = [];
+
+
+
+
 			    //dataarray = newarray;
 			    //newarray = null;
 		    }
 		    xhr.send();
+		    var a = 3;
 	    }
 
 
 	    dataarray = newarray;
-	    newarray = null;
+	   // newarray = [];
 
     //var dataarray = uint8ArrayToArray(data);
     //create crossfilter and filter all the data.
@@ -329,7 +336,7 @@
 
         // xhr.send();
 
-        //   dc.redrawAll();
+       // dc.redrawAll();
 
     }
 
