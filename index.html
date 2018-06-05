@@ -66,6 +66,10 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
     <script type="text/javascript" src="https://dc-js.github.io/dc.js/js/dc.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Artifika" rel="stylesheet">
+    <script src="https://unpkg.com/simple-statistics@5.0.0/dist/simple-statistics.min.js"></script>
+
+    <script src="js/pako.min.js"></script>
+    <script src="js/UPNG.js"></script>
 
 
 </head>
@@ -168,55 +172,62 @@
     function updateMapFilter() {
 
 
-        // map.flyTo(map.getCenter(),map.getZoom());
+	    // map.flyTo(map.getCenter(),map.getZoom());
 
-        // $(lcTile._container.children[0]).find("img").length
+	    // $(lcTile._container.children[0]).find("img").length
 
-        var i =  0;
-        var imgs = $(lcTile._container.children[0]).find("img");
-        var len = imgs.length;
+	    var i = 0;
+	    var imgs = $(lcTile._container.children[0]).find("img");
+	    var len = imgs.length;
 	    var newarray = [];
 
-        for (i = 0; i < len; i++) {
+	    for (i = 0; i < len; i++) {
 
-        var data = null;
-        url = imgs[i].src;
-        //url = lcTile
-        //console.log(src);
-        var xhr = new XMLHttpRequest();
-        url = "/LC_barchart/assets/qtiles/MODIS_vis3/4/6/6.png";
-        xhr.open('GET', url, true);
-        xhr.responseType = 'arraybuffer';
-        xhr.onload = function(e) {
-	        tt = this.response;
-	        var img = UPNG.decode(tt);
-	        var rgba = UPNG.toRGBA8(img)[0];
-	        var h = img.height;
-	        var w = img.width;
-	        var ctype = img.ctype;
-	        var depth = img.depth;
-	        data = img.data;
+		    var data = null;
+		    // url = imgs[i].src;
+		    url = $(imgs[i]).attr("src");
+		    //url = lcTile
+		    //console.log(src);
+		    var xhr = new XMLHttpRequest();
+		    // url = "/LC_barchart/assets/qtiles/MODIS_vis3/4/6/6.png";
+		    xhr.open('GET', url, true);
+		    xhr.responseType = 'arraybuffer';
+		    xhr.onload = function (e) {
 
-	        console.log("depth:" + depth.toString());
-	        console.log("ctype:" + ctype.toString());
-	        console.log("mean:" + ss.mean(data).toString());
-	        console.log("median:" + ss.median(data).toString());
-	        console.log("max:" + ss.max(data).toString());
-	        console.log(data);
+			    tt = this.response;
+			    var img = UPNG.decode(tt);
+			    var rgba = UPNG.toRGBA8(img)[0];
+			    var h = img.height;
+			    var w = img.width;
+			    var ctype = img.ctype;
+			    var depth = img.depth;
+			    data = img.data;
 
-	        var dataarray = Array.from(lcTile);
-	       // var newarray = [];
-	        for (var i = 0; i < dataarray.length; i++) {
+			    console.log("depth:" + depth.toString());
+			    console.log("ctype:" + ctype.toString());
+			    console.log("mean:" + ss.mean(data).toString());
+			    console.log("median:" + ss.median(data).toString());
+			    console.log("max:" + ss.max(data).toString());
+			    console.log(data);
 
-		        if (dataarray[i] < 251 && dataarray[i] > 0) {
-			        newarray.push(dataarray[i]);
-		        }
-	        }
-	        //dataarray = newarray;
-	        //newarray = null;
-        }
-	        dataarray = newarray;
-	        newarray = null;
+			    var dataarray = Array.from(lcTile);
+			    // var newarray = [];
+			    for (var i = 0; i < dataarray.length; i++) {
+
+				    if (dataarray[i] < 251 && dataarray[i] > 0) {
+					    newarray.push(dataarray[i]);
+				    }
+			    }
+			    //dataarray = newarray;
+			    //newarray = null;
+		    }
+		    xhr.send();
+	    }
+
+
+	    dataarray = newarray;
+	    newarray = null;
+
     //var dataarray = uint8ArrayToArray(data);
     //create crossfilter and filter all the data.
     var filter = crossfilter(dataarray); //Create a crossfilter, input all the geospatial data.
@@ -228,24 +239,22 @@
     var lcDimension = filter.dimension(function(d) {
         var veg = d;
         return  veg  = 0 ? 'Water':
-            veg = 1  ? 'Forest' :
-                veg = 2 ? 'Forest2' :
-                    veg = 3 ? 'Forest3' :
-                        veg = 4 ? 'Forest4' :
-                            veg = 5 ? 'Forest5' :
-                                veg = 6 ? 'Shrubland' :
-                                    veg = 7 ? 'Shrubland2' :
-                                        veg = 8 ? 'Savannas/Grasslands' :
-                                            veg = 9 ? 'Savannas/Grasslands2':
-                                                veg = 10 ? 'Savannas/Grasslands3' :
-                                                    veg = 11 ? 'Wetlands' :
-                                                        veg = 12 ? 'Croplands' :
-                                                            veg = 13 ? 'Urban' :
-                                                                veg = 14 ? 'Cropland/natural veg' :
-                                                                    veg = 15 ? 'Snow/ice' :
-                                                                        veg = 16 ? 'Barren' : ''
-
-
+        veg = 1  ? 'Forest' :
+        veg = 2 ? 'Forest2' :
+        veg = 3 ? 'Forest3' :
+        veg = 4 ? 'Forest4' :
+        veg = 5 ? 'Forest5' :
+        veg = 6 ? 'Shrubland' :
+        veg = 7 ? 'Shrubland2' :
+        veg = 8 ? 'Savannas/Grasslands' :
+        veg = 9 ? 'Savannas/Grasslands2':
+        veg = 10 ? 'Savannas/Grasslands3' :
+        veg = 11 ? 'Wetlands' :
+        veg = 12 ? 'Croplands' :
+        veg = 13 ? 'Urban' :
+        veg = 14 ? 'Cropland/natural veg' :
+        veg = 15 ? 'Snow/ice' :
+        veg = 16 ? 'Barren' : ''
 
 
     });
@@ -315,10 +324,10 @@
 
     }
 
-        };
+        // };
 
 
-        xhr.send();
+        // xhr.send();
 
         //   dc.redrawAll();
 
