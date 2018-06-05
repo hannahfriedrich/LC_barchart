@@ -54,6 +54,8 @@
     <!-- Javascript Libraries -->
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <!-- mapbox gl js -->
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.js"></script>
     <!-- leaflet mapbox js -->
@@ -167,42 +169,54 @@
 
 
         // map.flyTo(map.getCenter(),map.getZoom());
-        var data = null;
 
-        url = lcTile._ctx.canvas._image.src;
+        // $(lcTile._container.children[0]).find("img").length
+
+        var i =  0;
+        var imgs = $(lcTile._container.children[0]).find("img");
+        var len = imgs.length;
+	    var newarray = [];
+
+        for (i = 0; i < len; i++) {
+
+        var data = null;
+        url = imgs[i].src;
         //url = lcTile
         //console.log(src);
         var xhr = new XMLHttpRequest();
+        url = "/LC_barchart/assets/qtiles/MODIS_vis3/4/6/6.png";
         xhr.open('GET', url, true);
         xhr.responseType = 'arraybuffer';
         xhr.onload = function(e) {
-            tt = this.response;
-            var img = UPNG.decode(tt);
-            var rgba = UPNG.toRGBA8(img)[0];
-            var h = img.height;
-            var w = img.width;
-            var ctype = img.ctype;
-            var depth = img.depth;
-            data = img.data;
+	        tt = this.response;
+	        var img = UPNG.decode(tt);
+	        var rgba = UPNG.toRGBA8(img)[0];
+	        var h = img.height;
+	        var w = img.width;
+	        var ctype = img.ctype;
+	        var depth = img.depth;
+	        data = img.data;
 
-            console.log("depth:" + depth.toString());
-            console.log("ctype:" + ctype.toString());
-            console.log("mean:" + ss.mean(data).toString());
-            console.log("median:" + ss.median(data).toString());
-            console.log("max:" + ss.max(data).toString());
-            console.log(data);
+	        console.log("depth:" + depth.toString());
+	        console.log("ctype:" + ctype.toString());
+	        console.log("mean:" + ss.mean(data).toString());
+	        console.log("median:" + ss.median(data).toString());
+	        console.log("max:" + ss.max(data).toString());
+	        console.log(data);
 
-    var dataarray = Array.from(lcTile);
-    var newarray = [];
-    for(var i=0;i<dataarray.length;i++) {
+	        var dataarray = Array.from(lcTile);
+	       // var newarray = [];
+	        for (var i = 0; i < dataarray.length; i++) {
 
-        if (dataarray[i] < 251 && dataarray[i] > 0) {
-            newarray.push(dataarray[i]);
+		        if (dataarray[i] < 251 && dataarray[i] > 0) {
+			        newarray.push(dataarray[i]);
+		        }
+	        }
+	        //dataarray = newarray;
+	        //newarray = null;
         }
-    }
-    dataarray = newarray;
-    newarray = null;
-
+	        dataarray = newarray;
+	        newarray = null;
     //var dataarray = uint8ArrayToArray(data);
     //create crossfilter and filter all the data.
     var filter = crossfilter(dataarray); //Create a crossfilter, input all the geospatial data.
@@ -311,6 +325,9 @@
     }
 
     updateMapFilter();
+
+
+   // lcTile.on('load', updateMapFilter);
 
 
 </script>
