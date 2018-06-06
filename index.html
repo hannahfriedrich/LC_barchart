@@ -19,6 +19,7 @@
         #map {
             width: 50%;
             height: 100%;
+            background-color: rgb(174,182,254);
         }
 
         #title {
@@ -123,8 +124,6 @@
     }
 
 
-
-
     var map = L.map('map').setView([13.29119, -22.92940], 4);
 
     mapbox_token = 'pk.eyJ1IjoiZnJpZWRyaWgiLCJhIjoiY2o4eGYyZzllMGtiYjMzcGp0cTM5NXZ0cCJ9.BPCA9enT7iq6naVIOEHK9w';
@@ -171,18 +170,16 @@
 ///////////////CHART CREATION//////////////////////////
     function updateMapFilter() {
 
-
 	    // map.flyTo(map.getCenter(),map.getZoom());
 
 	    // $(lcTile._container.children[0]).find("img").length
 
-	    var i = 0;
 	    var imgs = $(lcTile._container.children[0]).find("img");
 	    var len = imgs.length;
 	    var newarray = [];
 	    var dataarray = [];
 
-	    for (i = 0; i < len; i++) {
+	    for (var i = 0; i < len; i++) {
 
 		    var data = null;
 		    // url = imgs[i].src;
@@ -193,6 +190,7 @@
 		    // url = "/LC_barchart/assets/qtiles/MODIS_vis3/4/6/6.png";
 		    xhr.open('GET', url, true);
 		    xhr.responseType = 'arraybuffer';
+            xhr.send();
 		    xhr.onload = function (e) {
 
 			    tt = this.response;
@@ -211,34 +209,32 @@
 			    console.log("max:" + ss.max(data).toString());
 			    console.log(data);
 
-			    dataarray = Array.from(data);
+			    dataarray[i] = Array.from(data);
 			    // var newarray = [];
-			    for (var i = 0; i < dataarray.length; i++) {
+			    for (var j = 0; j < dataarray[i].length; j++) {
 
-					    if (dataarray[i] < 251 && dataarray[i] > 0 && dataarray[i] != null) {
-							    newarray.push(dataarray[i]);
+					    if (dataarray[i][j] < 251 && dataarray[i][j] > 0 && dataarray[i][j] != null) {
+							    newarray.push(dataarray[i][j]);
 					    }
 			    }
-			    dataarray = [];
-
-
-
+			    dataarray[i] = [];
 
 			    //dataarray = newarray;
 			    //newarray = null;
 		    }
-		    xhr.send();
-		    var a = 3;
+
+		    //var a = 3;
 	    }
 
 
-	    dataarray = newarray;
+	    //dataarray = newarray;
 	   // newarray = [];
 
     //var dataarray = uint8ArrayToArray(data);
     //create crossfilter and filter all the data.
-    var filter = crossfilter(dataarray); //Create a crossfilter, input all the geospatial data.
-
+        console.log("newarray length:" + newarray.length);
+    var filter = crossfilter(newarray); //Create a crossfilter, input all the geospatial data.
+        //newarray= null;
 
     //create charts
     var lcChart = dc.barChart('#lc-chart');
