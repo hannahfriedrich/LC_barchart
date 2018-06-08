@@ -19,13 +19,14 @@
         #map {
             width: 50%;
             height: 100%;
-            background-color: rgb(174,182,254);
+            background-color: rgb(198, 198, 198);
+            /*color: rgba(209,196,180, 255);*/
         }
 
         #title {
             position: fixed;
             top: 10px;
-            right: 20px;
+            right: 200px;
             padding-top: 10px;
             padding-left: 80px;
         }
@@ -40,11 +41,13 @@
         }
 
         #lc-chart {
-            width: 20%;
-            position: fixed;
-            right: 20px;
-            padding-top: 30px;
-            padding-left: 80px;
+            width: 100px;
+            position: relative;
+            right: 100px;
+            top: 50px;
+
+            margin-right: 20px;
+            /*padding-left: 80px;*/
         }
 
     </style>
@@ -192,13 +195,15 @@
                 var ctype = img.ctype;
                 var depth = img.depth;
                 var data = img.data;
-
-                // console.log("depth:" + depth.toString());
-                // console.log("ctype:" + ctype.toString());
-                // console.log("mean:" + ss.mean(data).toString());
-                // console.log("median:" + ss.median(data).toString());
-                // console.log("max:" + ss.max(data).toString());
-                //console.log(data);
+                //
+                console.log("depth:" + depth.toString());
+                console.log("ctype:" + ctype.toString());
+                console.log("mean:" + ss.mean(data).toString());
+                console.log("median:" + ss.median(data).toString());
+                console.log("max:" + ss.max(data).toString());
+                //
+                console.log(data);
+	            console.log("mode:" + ss.mode(data).toString());
                 dataarray = Array.from(data);
                 return dataarray;
 
@@ -213,11 +218,12 @@
             $("#update").text("assembling...1");
             var newarray = [];
             for (var i = 0; i < arries.length; i++) {
-                for (var j = 0; j < arries[i].length; j +=50) {
-                    if (arries[i][j] < 251 && arries[i][j] > 0 && arries[i][j] != null) {
-                        newarray.push(arries[i][j]);
+                for (var j = 0; j < arries[i].length; j +=4 * 50) {
+                    // if (arries[i][j] < 256 && arries[i][j] > 0 && arries[i][j] != null) {
 
-                    }
+                    	newarray.push(arries[i][j] * arries[i][j+1] * arries[i][j+2] * arries[i][j+3]);
+
+                    // }
 
                 }
                 console.log("i");
@@ -228,26 +234,46 @@
 
             //create charts
             var lcChart = dc.barChart('#lc-chart');
+            var b = 4;
+            barren_l = (209-b)*(196-b)*(180-b)*255;
+	        barren_h = (209+b)*(196+b)*(180+b)*255;
+            forest_l = (83-b)*(163-b)*(122-b)*255;
+	        forest_h = (83+b)*(163+b)*(122+b)*255;
+            water_l = (171-b)*(182-b)*(255-b)*255;
+	        water_h = (171+b)*(182+b)*(255)*255;
 
             var lcDimension = filter.dimension(function (d) {
                 var veg = d;
-                return veg = 0 ? 'Water' :
-                    veg = 1 ? 'Forest' :
-                    veg = 2 ? 'Forest2' :
-                    veg = 3 ? 'Forest3' :
-                    veg = 4 ? 'Forest4' :
-                    veg = 5 ? 'Forest5' :
-                    veg = 6 ? 'Shrubland' :
-                    veg = 7 ? 'Shrubland2' :
-                    veg = 8 ? 'Savannas/Grasslands' :
-                    veg = 9 ? 'Savannas/Grasslands2' :
-                    veg = 10 ? 'Savannas/Grasslands3' :
-                    veg = 11 ? 'Wetlands' :
-                    veg = 12 ? 'Croplands' :
-                    veg = 13 ? 'Urban' :
-                    veg = 14 ? 'Cropland/natural veg' :
-                    veg = 15 ? 'Snow/ice' :
-                    veg = 16 ? 'Barren' : ''
+                r = "WetLands";
+                if ( veg >= forest_l && veg <= forest_h) {
+                	r = "Forest"
+
+                }
+	            if (veg >= barren_l && veg <= barren_h) {
+
+		            r = "Barren"
+	            }
+
+	            if (veg >= water_l && veg <= water_h) {
+
+		            r = "Water"
+	            }
+	            // return veg =  0 ? 'Water' :
+	             //    veg >= forest_l && veg <= forest_h  ? 'Forest' :
+                //     veg = 6 ? 'Shrubland' :
+                //     veg = 7 ? 'Shrubland2' :
+                //     veg = 8 ? 'Savannas/Grasslands' :
+                //     veg = 9 ? 'Savannas/Grasslands2' :
+                //     veg = 10 ? 'Savannas/Grasslands3' :
+                //     veg = 11 ? 'Wetlands' :
+                //     veg = 12 ? 'Croplands' :
+                //     veg = 13 ? 'Urban' :
+                //     veg = 14 ? 'Cropland/natural veg' :
+                //     veg = 15 ? 'Snow/ice' :
+                //     veg >= barren_l && veg <= barren_h ? 'Barren' : ''
+
+
+                return r;
             });
 
             $("#update").text("assembling...3");
@@ -256,8 +282,8 @@
 
             lcChart
                 .height(400)
-                .width(600)
-                .margins({top: 0, right: 50, bottom: 50, left: 45})
+                .width(400)
+                .margins({top: 0, right: 0, bottom: 50, left: 45})
                 .dimension(lcDimension)
                 .group(lcDimensionGroup)
                 .elasticY(true)
