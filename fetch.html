@@ -241,14 +241,29 @@
 	        forest_h = (83+b)*(163+b)*(122+b)*255;
             water_l = (171-b)*(182-b)*(255-b)*255;
 	        water_h = (171+b)*(182+b)*(255)*255;
+            shrubland_l = (238-b)*(221-b)*(185-b)*255;
+            shrubland_h = (238+b)*(221+b)*(185+b)*255;
+            savanna_l = (250-b)*(246-b)*(167-b)*255;
+            savanna_h = (250+b)*(246+b)*(167+b)*255;
+            wetland_l = (161-b)*(200-b)*(193-b)*255;
+            wetland_h = (161+b)*(200+b)*(193+b)*255;
+            cropland_l = (228-b)*(229-b)*(166-b)*255;
+            cropland_h = (228+b)*(229+b)*(166+b)*255;
+            urban_l = (172-b)*(154-b)*(176-b)*255;
+            urban_h = (172+b)*(154+b)*(176+b)*255;
+            naturalveg_l = (118-b)*(165-b)*(61-b)*255;
+            naturalveg_h = (118+b)*(165+b)*(61+b)*255;
+            snow_l = (239-b)*(239-b)*(238-b)*255;
+            snow_h  = (239+b)*(239+b)*(238+b)*255;
+
 
             var lcDimension = filter.dimension(function (d) {
                 var veg = d;
-                r = "WetLands";
+                r = "Wetland";
                 if ( veg >= forest_l && veg <= forest_h) {
                 	r = "Forest"
-
                 }
+
 	            if (veg >= barren_l && veg <= barren_h) {
 
 		            r = "Barren"
@@ -258,6 +273,42 @@
 
 		            r = "Water"
 	            }
+
+                if (veg >= shrubland_l && veg <= shrubland_h) {
+
+                    r = "Shrubland"
+                }
+
+                if (veg >= savanna_l && veg <= savanna_h) {
+
+                    r = "Savanna"
+                }
+
+                if (veg >= wetland_l && veg <= wetland_h) {
+
+                    r = "Wetland"
+                }
+
+                if (veg >= cropland_l && veg <= cropland_h) {
+
+                    r = "Cropland"
+                }
+
+                if (veg >= urban_l && veg <= urban_h) {
+
+                    r = "Urban"
+                }
+
+                if (veg >= naturalveg_l && veg <= naturalveg_h) {
+
+                    r = "NaturalVegetation"
+                }
+
+                if (veg >= snow_l && veg <= snow_h) {
+
+                    r = "Snow"
+                }
+
 	            // return veg =  0 ? 'Water' :
 	             //    veg >= forest_l && veg <= forest_h  ? 'Forest' :
                 //     veg = 6 ? 'Shrubland' :
@@ -310,28 +361,28 @@
                 if (text == "Water") {
                     $(bars[i]).css({fill: '#abb6ff'});
                 }
-                if (text == "Forest" || text == "Forest2" || text == "Forest3" || text == "Forest4" || text == "Forest5") {
+                if (text == "Forest") {
                     $(bars[i]).css({fill: '#53a37a'});
                 }
-                if (text == "Shrubland" || text == "Shrubland2") {
+                if (text == "Shrubland") {
                     $(bars[i]).css({fill: '#eeddb9'});
                 }
-                if (text == "Savannas/Grasslands" || text == "Savannas/Grasslands2" || text == "Savannas/Grasslands3") {
+                if (text == "Savanna") {
                     $(bars[i]).css({fill: '#faf6a7'});
                 }
-                if (text == "Wetlands") {
+                if (text == "Wetland") {
                     $(bars[i]).css({fill: '#a1c8c1'});
                 }
-                if (text == "Croplands") {
+                if (text == "Cropland") {
                     $(bars[i]).css({fill: '#e4e5a6'});
                 }
                 if (text == "Urban") {
                     $(bars[i]).css({fill: '#ac9ab0'});
                 }
-                if (text == "Cropland/natural veg") {
+                if (text == "NaturalVegetation") {
                     $(bars[i]).css({fill: '#76a53d'});
                 }
-                if (text == "Snow/ice") {
+                if (text == "Snow") {
                     $(bars[i]).css({fill: '#efefee'});
                 }
                 if (text == "Barren") {
